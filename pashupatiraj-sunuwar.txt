@@ -1,0 +1,85 @@
+DESCRIBE movies;
++--------------+--------------+------+-----+---------+-------+
+| Field        | Type         | Null | Key | Default | Extra |
++--------------+--------------+------+-----+---------+-------+
+| id           | int(11)      | NO   | PRI | NULL    |       |
+| title        | varchar(255) | YES  |     | NULL    |       |
+| release_date | date         | YES  |     | NULL    |       |
++--------------+--------------+------+-----+---------+-------+
+
+DESCRIBE ratings;
++----------+-----------+------+-----+-------------------+-----------------------------+
+| Field    | Type      | Null | Key | Default           | Extra                       |
++----------+-----------+------+-----+-------------------+-----------------------------+
+| id       | int(11)   | NO   | PRI | NULL              |                             |
+| user_id  | int(11)   | YES  |     | NULL              |                             |
+| movie_id | int(11)   | YES  |     | NULL              |                             |
+| rating   | int(11)   | YES  |     | NULL              |                             |
+| rated_at | timestamp | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
++----------+-----------+------+-----+-------------------+-----------------------------+
+
+DESCRIBE genres;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| id    | int(11)      | NO   | PRI | NULL    |       |
+| name  | varchar(255) | YES  |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+
+DESCRIBE genres_movies;
++----------+---------+------+-----+---------+-------+
+| Field    | Type    | Null | Key | Default | Extra |
++----------+---------+------+-----+---------+-------+
+| id       | int(11) | NO   | PRI | NULL    |       |
+| movie_id | int(11) | YES  |     | NULL    |       |
+| genre_id | int(11) | YES  |     | NULL    |       |
++----------+---------+------+-----+---------+-------+
+
+DESCRIBE occupations;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| id    | int(11)      | NO   | PRI | NULL    |       |
+| name  | varchar(255) | YES  |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+
+DESCRIBE users;
++---------------+--------------+------+-----+---------+-------+
+| Field         | Type         | Null | Key | Default | Extra |
++---------------+--------------+------+-----+---------+-------+
+| id            | int(11)      | NO   | PRI | NULL    |       |
+| age           | int(11)      | YES  |     | NULL    |       |
+| gender        | char(1)      | YES  |     | NULL    |       |
+| occupation_id | int(11)      | YES  |     | NULL    |       |
+| zip_code      | varchar(255) | YES  |     | NULL    |       |
++---------------+--------------+------+-----+---------+-------+
+
+1.	Return the titles and release dates of all movies released between 1983 and 1993 (inclusive), displayed in reverse chronologicasd
+2.	Return the titles of the movies which have the lowest average rating.
+3.	Return the titles for each sci-fi movie which has received at least one 5* rating from the student/male/24-years-old demographic. Duplicate titles are not allowed.
+4.	Return each of the titles for the movies which were released on the most popular release day.
+5.	Return, in ascending numeric order, the name of, and total number of movies for, each genre. 
+
+
+1.
+
+SELECT title, release_date 
+FROM movies WHERE release_date >= '1983%' 
+AND release_date <= '1994%' 
+ORDER BY release_date DESC;
+
+2.
+
+SELECT * FROM(
+SELECT DISTINCT movies.id, movies.title, avg(ratings.rating) AS avg_rating
+FROM movies
+JOIN ratings ON movies.id = ratings.movies.id
+GROUP BY movies.id
+ORDER BY avg_rating
+)
+AS min_avg
+WHERE avg_rating = 1;
+
+
+3.
+
